@@ -18,7 +18,6 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             <Link to="/codenest" className='hover:opacity-80 transition font-bold text-lg'>Tasks</Link>
           </div>
 
-          {/* Global Theme Toggle Button */}
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
             className={`p-2.5 border rounded-xl flex items-center justify-center transition shadow-sm ${

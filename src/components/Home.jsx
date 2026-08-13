@@ -5,7 +5,7 @@ import { addToCodeNest, updateToCodeNest } from '../redux/Slice';
 import { Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const Home = () => {
+const Home = ({ isDarkMode }) => {
     const [title, setTitle] = useState('');
     const [value, setValue] = useState('');
     const [searchParams, setSearchParams] = useSearchParams();
@@ -21,6 +21,10 @@ const Home = () => {
                setTitle(task.title);
                setValue(task.content);
            }
+        } else {
+            // Reset fields when there is no codeId (e.g. clicking Home)
+            setTitle('');
+            setValue('');
         }
     }, [codeId, allTasks])
 
@@ -52,7 +56,11 @@ const Home = () => {
             {/* Top Control Bar */}
             <div className='flex flex-row gap-4 justify-between w-full items-center'>
                 <input 
-                className='border-2 p-3 px-4 rounded-2xl w-full outline-none text-lg font-semibold border-gray-800 bg-black text-gray-300 shadow-sm'
+                className={`border-2 p-3 px-4 rounded-2xl w-full outline-none text-lg font-semibold shadow-sm transition-colors duration-300 ${
+                    isDarkMode 
+                        ? 'border-gray-800 bg-black text-gray-300 placeholder-gray-600' 
+                        : 'border-gray-300 bg-white text-gray-900 placeholder-gray-400'
+                }`}
                 type="text"
                 placeholder='Enter Title Here'
                 value={title}
@@ -60,15 +68,23 @@ const Home = () => {
                 />
 
                 <button onClick={createTask}
-                className='border-2 px-8 py-3.5 rounded-2xl font-semibold hover:bg-white hover:text-black  transition whitespace-nowrap border-gray-800 bg-black text-gray-300 shadow-sm'>
+                className={`border-2 px-8 py-3.5 rounded-2xl font-semibold transition whitespace-nowrap shadow-sm ${
+                    isDarkMode 
+                        ? 'border-gray-800 bg-black text-gray-300 hover:bg-white hover:text-black' 
+                        : 'border-gray-300 bg-white text-gray-800 hover:bg-black hover:text-white'
+                }`}>
                     {codeId ? "Update Task" : "Create Task"}
                 </button>
             </div>
 
-            {/* Mac-Style Window Container */}
-            <div className='border-2 rounded-2xl w-full flex flex-col grow overflow-hidden shadow-xl bg-black text-white'>
+            {/* Window Container */}
+            <div className={`border-2 rounded-2xl w-full flex flex-col grow overflow-hidden shadow-xl transition-colors duration-300 ${
+                isDarkMode ? 'border-gray-800 bg-black text-white' : 'border-gray-300 bg-white text-gray-900'
+            }`}>
                 
-                <div className='flex justify-between items-center px-4 py-3 bg-gray-900 border-b border-gray-800'>
+                <div className={`flex justify-between items-center px-4 py-3 border-b transition-colors duration-300 ${
+                    isDarkMode ? 'bg-gray-900 border-gray-800' : 'bg-gray-100 border-gray-300'
+                }`}>
                     <div className='flex items-center gap-2'>
                         <div className='w-3.5 h-3.5 rounded-full bg-red-500'></div>
                         <div className='w-3.5 h-3.5 rounded-full bg-yellow-500'></div>
@@ -81,7 +97,11 @@ const Home = () => {
                             navigator.clipboard.writeText(value);
                             toast.success("Copied to Clipboard");
                         }}
-                        className='flex items-center gap-1.5 px-3 py-1.5 border border-gray-700 rounded-lg text-lg font-medium hover:bg-gray-800 hover:text-white transition bg-gray-900'
+                        className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-lg font-medium transition ${
+                            isDarkMode 
+                                ? 'border-gray-700 bg-gray-900 text-gray-200 hover:bg-gray-800 hover:text-white' 
+                                : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-200 hover:text-black'
+                        }`}
                         title='Copy Content'
                     >
                         <Copy size={20} />
@@ -89,9 +109,11 @@ const Home = () => {
                     </button>
                 </div>
 
-                <div className='p-2 bg-black flex flex-col grow'>
+                <div className={`p-2 flex flex-col grow transition-colors duration-300 ${isDarkMode ? 'bg-black' : 'bg-white'}`}>
                     <textarea
-                    className='w-full bg-black text-gray-200 outline-none p-4 font-mono text-xl resize-y min-h-[65vh] grow' 
+                    className={`w-full outline-none p-4 font-mono text-xl resize-y min-h-[65vh] grow transition-colors duration-300 ${
+                        isDarkMode ? 'bg-black text-gray-200' : 'bg-white text-gray-800'
+                    }`} 
                     value={value}
                     placeholder='Enter Your Content / Code here...'
                     onChange={(e) => setValue(e.target.value)}
