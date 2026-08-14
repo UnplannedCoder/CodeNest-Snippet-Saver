@@ -12,24 +12,24 @@ const Home = ({ isDarkMode }) => {
     const codeId = searchParams.get("codeId");
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const allTasks = useSelector((state) => state.codenest.codenest);
+    const allSnippets = useSelector((state) => state.codenest.codenest);
 
     useEffect(() => {
         if(codeId) {
-           const task = allTasks.find((item) => item._id === codeId);
-           if(task) {
-               setTitle(task.title);
-               setValue(task.content);
+           const snippet = allSnippets.find((item) => item._id === codeId);
+           if(snippet) {
+               setTitle(snippet.title);
+               setValue(snippet.content);
            }
         } else {
             // Reset fields when there is no codeId (e.g. clicking Home)
             setTitle('');
             setValue('');
         }
-    }, [codeId, allTasks])
+    }, [codeId, allSnippets])
 
-    function createTask(){
-        const task = {
+    function createSnippet(){
+        const snippet = {
             title: title || "Untitled",
             content: value,
             _id: codeId || Date.now().toString(30),
@@ -37,10 +37,10 @@ const Home = ({ isDarkMode }) => {
         }        
 
         if (codeId){
-            dispatch(updateToCodeNest(task));
+            dispatch(updateToCodeNest(snippet));
         }
         else {
-            dispatch(addToCodeNest(task));
+            dispatch(addToCodeNest(snippet));
         }
 
         setTitle('');
@@ -67,13 +67,13 @@ const Home = ({ isDarkMode }) => {
                 onChange={(e) => setTitle(e.target.value)}
                 />
 
-                <button onClick={createTask}
+                <button onClick={createSnippet}
                 className={`border-2 px-8 py-3.5 rounded-2xl font-semibold transition whitespace-nowrap shadow-sm ${
                     isDarkMode 
                         ? 'border-gray-800 bg-black text-gray-300 hover:bg-white hover:text-black' 
                         : 'border-gray-300 bg-white text-gray-800 hover:bg-black hover:text-white'
                 }`}>
-                    {codeId ? "Update Task" : "Create Task"}
+                    {codeId ? "Update Snippet" : "Create Snippet"}
                 </button>
             </div>
 

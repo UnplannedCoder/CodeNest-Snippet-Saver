@@ -15,7 +15,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
         <div className='flex items-center gap-6'>
           <div className='flex gap-4 font-semibold'>
             <Link to="/" className='hover:opacity-80 transition font-bold text-lg'>Home</Link>
-            <Link to="/codenest" className='hover:opacity-80 transition font-bold text-lg'>Tasks</Link>
+            <Link to="/codenest" className='hover:opacity-80 transition font-bold text-lg'>Snippets</Link>
           </div>
 
           <button

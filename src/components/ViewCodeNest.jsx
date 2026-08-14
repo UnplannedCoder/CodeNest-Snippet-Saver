@@ -7,11 +7,11 @@ import toast from 'react-hot-toast';
 const ViewCodeNest = ({ isDarkMode }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const allTasks = useSelector((state) => state.codenest.codenest);
-  const task = allTasks.find((item) => item._id === id);
+  const allSnippets = useSelector((state) => state.codenest.codenest);
+  const snippet = allSnippets.find((item) => item._id === id);
 
-  if (!task) {
-    return <div className="p-5 text-center">Task not found</div>;
+  if (!snippet) {
+    return <div className="p-5 text-center">Snippet not found</div>;
   }
 
   return (
@@ -27,7 +27,7 @@ const ViewCodeNest = ({ isDarkMode }) => {
                 : 'border-gray-300 bg-white text-gray-900'
             }`}
             type="text"
-            value={task.title}
+            value={snippet.title}
             disabled
           />
           <button 
@@ -58,7 +58,7 @@ const ViewCodeNest = ({ isDarkMode }) => {
 
             <button 
               onClick={() => {
-                  navigator.clipboard.writeText(task.content);
+                  navigator.clipboard.writeText(snippet.content);
                   toast.success("Copied to Clipboard");
               }}
               className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-lg font-medium transition ${
@@ -76,7 +76,7 @@ const ViewCodeNest = ({ isDarkMode }) => {
           <div className={`p-6 font-mono text-xl whitespace-pre-wrap wrap-break-words min-h-[65vh] grow cursor-not-allowed transition-colors duration-300 ${
             isDarkMode ? 'bg-black text-gray-200' : 'bg-white text-gray-800'
           }`}>
-              {task.content}
+              {snippet.content}
           </div>
 
         </div>
