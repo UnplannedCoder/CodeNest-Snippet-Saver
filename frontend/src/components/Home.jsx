@@ -50,13 +50,13 @@ const Home = ({ isDarkMode }) => {
     }
 
   return (
-    <div className='flex flex-col items-center w-full px-6 py-6 grow'>
-        <div className='flex flex-col gap-6 w-full max-w-6xl mx-auto grow'>
+    <div className='flex flex-col items-center w-full px-3 sm:px-4 md:px-6 py-4 sm:py-6 grow overflow-hidden'>
+        <div className='flex flex-col gap-4 sm:gap-6 w-full max-w-3xl mx-auto grow'>
             
             {/* Top Control Bar */}
-            <div className='flex flex-row gap-4 justify-between w-full items-center'>
+            <div className='flex flex-col gap-3 sm:flex-row sm:gap-4 justify-between w-full items-stretch sm:items-center'>
                 <input 
-                className={`border-2 p-3 px-4 rounded-2xl w-full outline-none text-lg font-semibold shadow-sm transition-colors duration-300 ${
+                className={`border-2 p-3 px-4 rounded-2xl w-full outline-none text-base sm:text-lg font-semibold shadow-sm transition-colors duration-300 ${
                     isDarkMode 
                         ? 'border-gray-800 bg-black text-gray-300 placeholder-gray-600' 
                         : 'border-gray-300 bg-white text-gray-900 placeholder-gray-400'
@@ -68,7 +68,7 @@ const Home = ({ isDarkMode }) => {
                 />
 
                 <button onClick={createSnippet}
-                className={`border-2 px-8 py-3.5 rounded-2xl font-semibold transition whitespace-nowrap shadow-sm ${
+                className={`border-2 px-5 sm:px-8 py-3 rounded-2xl font-semibold transition whitespace-nowrap shadow-sm w-full sm:w-auto ${
                     isDarkMode 
                         ? 'border-gray-800 bg-black text-gray-300 hover:bg-white hover:text-black' 
                         : 'border-gray-300 bg-white text-gray-800 hover:bg-black hover:text-white'
@@ -82,7 +82,7 @@ const Home = ({ isDarkMode }) => {
                 isDarkMode ? 'border-gray-800 bg-black text-white' : 'border-gray-300 bg-white text-gray-900'
             }`}>
                 
-                <div className={`flex justify-between items-center px-4 py-3 border-b transition-colors duration-300 ${
+                <div className={`flex justify-between items-center px-3 sm:px-4 py-3 border-b transition-colors duration-300 ${
                     isDarkMode ? 'bg-gray-900 border-gray-800' : 'bg-gray-100 border-gray-300'
                 }`}>
                     <div className='flex items-center gap-2'>
@@ -97,7 +97,7 @@ const Home = ({ isDarkMode }) => {
                             navigator.clipboard.writeText(value);
                             toast.success("Copied to Clipboard");
                         }}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-lg font-medium transition ${
+                        className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-base sm:text-lg font-medium transition ${
                             isDarkMode 
                                 ? 'border-gray-700 bg-gray-900 text-gray-200 hover:bg-gray-800 hover:text-white' 
                                 : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-200 hover:text-black'
@@ -111,7 +111,7 @@ const Home = ({ isDarkMode }) => {
 
                 <div className={`p-2 flex flex-col grow transition-colors duration-300 ${isDarkMode ? 'bg-black' : 'bg-white'}`}>
                     <textarea
-                    className={`w-full outline-none p-4 font-mono text-xl resize-y min-h-[65vh] grow transition-colors duration-300 ${
+                    className={`home-textarea w-full outline-none p-3 sm:p-4 font-mono text-base sm:text-lg md:text-xl resize-none min-h-[45vh] sm:min-h-[55vh] md:min-h-[65vh] grow overflow-auto transition-colors duration-300 ${
                         isDarkMode ? 'bg-black text-gray-200' : 'bg-white text-gray-800'
                     }`} 
                     value={value}

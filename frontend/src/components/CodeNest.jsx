@@ -40,7 +40,7 @@ const CodeNest = ({ isDarkMode }) => {
 
   return (
     <div className={`flex flex-col items-center w-full px-6 py-6 grow transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
-      <div className='flex flex-col gap-6 w-full max-w-6xl mx-auto grow'>
+      <div className='flex flex-col gap-6 w-full max-w-3xl mx-auto grow'>
         
         {/* Search Bar */}
         <div className='relative w-full flex items-center'>

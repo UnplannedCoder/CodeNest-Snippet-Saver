@@ -7,15 +7,15 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
     <nav className={`w-full border-b transition-colors duration-300 ${
       isDarkMode ? 'border-gray-800 bg-black text-white' : 'border-gray-200 bg-white text-gray-900'
     }`}>
-      <div className='max-w-6xl mx-auto px-6 py-4 flex justify-between items-center w-full'>
-        <div className='font-bold text-3xl'>
+      <div className='max-w-3xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center w-full'>
+        <div className='font-bold text-2xl sm:text-3xl'>
           <Link to="/">CodeNest</Link>
         </div>
-        
-        <div className='flex items-center gap-6'>
-          <div className='flex gap-4 font-semibold'>
-            <Link to="/" className='hover:opacity-80 transition font-bold text-lg'>Home</Link>
-            <Link to="/codenest" className='hover:opacity-80 transition font-bold text-lg'>Snippets</Link>
+
+        <div className='flex items-center justify-between sm:justify-end gap-3 sm:gap-6 w-full sm:w-auto'>
+          <div className='flex gap-3 sm:gap-4 font-semibold'>
+            <Link to="/" className='hover:opacity-80 transition font-bold text-base sm:text-lg'>Home</Link>
+            <Link to="/codenest" className='hover:opacity-80 transition font-bold text-base sm:text-lg'>Snippets</Link>
           </div>
 
           <button

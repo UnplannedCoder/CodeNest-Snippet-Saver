@@ -14,7 +14,7 @@ function App() {
       {
         path: "/",
         element: (
-          <div className={`min-h-screen w-full flex flex-col transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
+          <div className={`min-h-screen w-full flex flex-col overflow-x-hidden transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
             <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
             <Home isDarkMode={isDarkMode} />
           </div>
@@ -23,7 +23,7 @@ function App() {
       {
         path: "/codenest",
         element: (
-          <div className={`min-h-screen w-full flex flex-col transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
+          <div className={`min-h-screen w-full flex flex-col overflow-x-hidden transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
             <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
             <CodeNest isDarkMode={isDarkMode} />
           </div>
@@ -32,7 +32,7 @@ function App() {
       {
         path: "/codenest/:id",
         element: (
-          <div className={`min-h-screen w-full flex flex-col transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
+          <div className={`min-h-screen w-full flex flex-col overflow-x-hidden transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
             <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
             <ViewCodeNest isDarkMode={isDarkMode} />
           </div>
@@ -42,7 +42,7 @@ function App() {
   );
 
   return (
-    <div className='w-full min-h-screen'>
+    <div className='w-full min-h-screen overflow-x-hidden'>
       <RouterProvider router={router}/>
     </div>
   )

@@ -15,8 +15,8 @@ const ViewCodeNest = ({ isDarkMode }) => {
   }
 
   return (
-    <div className='flex flex-col items-center w-full px-6 py-6 grow'>
-      <div className='flex flex-col gap-6 w-full max-w-6xl mx-auto grow'>
+    <div className='flex flex-col items-center w-full h-full px-6 py-6 grow'>
+      <div className='flex flex-col gap-6 w-full max-w-3xl mx-auto grow'>
         
         {/* Top Bar with Title Input and Back Button */}
         <div className='flex flex-row gap-4 justify-between w-full items-center'>
@@ -47,7 +47,7 @@ const ViewCodeNest = ({ isDarkMode }) => {
           isDarkMode ? 'border-gray-800 bg-black text-white' : 'border-gray-300 bg-white text-gray-900'
         }`}>
           
-          <div className={`flex justify-between items-center px-4 py-3 border-b transition-colors duration-300 ${
+          <div className={`flex justify-between items-center px-3 sm:px-4 py-3 border-b transition-colors duration-300 ${
             isDarkMode ? 'bg-gray-900 border-gray-800' : 'bg-gray-100 border-gray-300'
           }`}>
             <div className='flex items-center gap-2'>
@@ -73,8 +73,8 @@ const ViewCodeNest = ({ isDarkMode }) => {
             </button>
           </div>
 
-          <div className={`p-6 font-mono text-xl whitespace-pre-wrap wrap-break-words min-h-[65vh] grow cursor-not-allowed transition-colors duration-300 ${
-            isDarkMode ? 'bg-black text-gray-200' : 'bg-white text-gray-800'
+          <div className={`view-code-panel p-4 font-mono text-base whitespace-pre-wrap wrap-break-words min-h-[60vh] max-h-[65vh] overflow-y-auto overflow-x-hidden grow cursor-not-allowed transition-colors duration-300 ${
+            isDarkMode ? 'border-gray-800 bg-black text-gray-200' : 'border-gray-300 bg-white text-gray-800'
           }`}>
               {snippet.content}
           </div>
