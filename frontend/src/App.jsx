@@ -1,42 +1,122 @@
-import { useState } from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchCurrentUser } from './redux/authSlice'
+import { fetchUserSnippets, resetAllCodeNest } from './redux/Slice'
 import './App.css'
 import Navbar from './components/Navbar'
 import Home from './components/Home'
 import CodeNest from './components/CodeNest'
 import ViewCodeNest from './components/ViewCodeNest'
+import Login from './components/Login'
+import Signup from './components/Signup'
+
+// Protected Route component (requires logged in user)
+const ProtectedRoute = ({ children, isDarkMode, setIsDarkMode }) => {
+  const { isAuthenticated, token, loading } = useSelector((state) => state.auth);
+
+  if (loading) {
+    return (
+      <div className={`min-h-screen w-full flex items-center justify-center ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated && !token && !localStorage.getItem('codenest_token')) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <div className={`min-h-screen w-full flex flex-col overflow-x-hidden transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
+      <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+      {children}
+    </div>
+  );
+};
+
+// Public Only Route component (for login/signup when already logged in)
+const PublicOnlyRoute = ({ children, isDarkMode, setIsDarkMode }) => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return (
+    <div className={`min-h-screen w-full flex flex-col overflow-x-hidden transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
+      <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+      {children}
+    </div>
+  );
+};
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const dispatch = useDispatch();
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    const token = localStorage.getItem('codenest_token');
+    if (token) {
+      dispatch(fetchCurrentUser());
+    }
+  }, [dispatch]);
+
+  // Fetch user snippets from MongoDB when user logs in, reset when logged out
+  useEffect(() => {
+    if (isAuthenticated && user && user._id) {
+      dispatch(fetchUserSnippets());
+    } else if (!isAuthenticated) {
+      dispatch(resetAllCodeNest());
+    }
+  }, [isAuthenticated, user, dispatch]);
 
   const router = createBrowserRouter(
     [
       {
         path: "/",
         element: (
-          <div className={`min-h-screen w-full flex flex-col overflow-x-hidden transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
-            <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+          <ProtectedRoute isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode}>
             <Home isDarkMode={isDarkMode} />
-          </div>
+          </ProtectedRoute>
         )
       },
       {
         path: "/codenest",
         element: (
-          <div className={`min-h-screen w-full flex flex-col overflow-x-hidden transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
-            <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+          <ProtectedRoute isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode}>
             <CodeNest isDarkMode={isDarkMode} />
-          </div>
+          </ProtectedRoute>
         )
       },
       {
         path: "/codenest/:id",
         element: (
-          <div className={`min-h-screen w-full flex flex-col overflow-x-hidden transition-colors duration-300 ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
-            <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+          <ProtectedRoute isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode}>
             <ViewCodeNest isDarkMode={isDarkMode} />
-          </div>
+          </ProtectedRoute>
         )
+      },
+      {
+        path: "/login",
+        element: (
+          <PublicOnlyRoute isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode}>
+            <Login isDarkMode={isDarkMode} />
+          </PublicOnlyRoute>
+        )
+      },
+      {
+        path: "/signup",
+        element: (
+          <PublicOnlyRoute isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode}>
+            <Signup isDarkMode={isDarkMode} />
+          </PublicOnlyRoute>
+        )
+      },
+      {
+        path: "*",
+        element: <Navigate to="/" replace />
       }
     ]
   );

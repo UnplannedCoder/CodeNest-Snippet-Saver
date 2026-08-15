@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { addToCodeNest, updateToCodeNest } from '../redux/Slice';
+import { addToCodeNestThunk, updateToCodeNestThunk } from '../redux/Slice';
 import { Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -28,19 +28,22 @@ const Home = ({ isDarkMode }) => {
         }
     }, [codeId, allSnippets])
 
-    function createSnippet(){
+    async function createSnippet(){
+        if (!value.trim()) {
+            toast.error("Please enter snippet content!");
+            return;
+        }
+
         const snippet = {
             title: title || "Untitled",
             content: value,
-            _id: codeId || Date.now().toString(30),
-            createdAt: new Date().toISOString(),
         }        
 
         if (codeId){
-            dispatch(updateToCodeNest(snippet));
+            await dispatch(updateToCodeNestThunk({ ...snippet, _id: codeId }));
         }
         else {
-            dispatch(addToCodeNest(snippet));
+            await dispatch(addToCodeNestThunk(snippet));
         }
 
         setTitle('');
@@ -48,6 +51,7 @@ const Home = ({ isDarkMode }) => {
         setSearchParams('');
         navigate('/codenest');
     }
+
 
   return (
     <div className='flex flex-col items-center w-full px-3 sm:px-4 md:px-6 py-4 sm:py-6 grow overflow-hidden'>
