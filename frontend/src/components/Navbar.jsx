@@ -77,7 +77,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             <div className='relative' ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-md hover:ring-2 hover:ring-emerald-400 transition cursor-pointer select-none`}
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-linear-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-md hover:ring-2 hover:ring-emerald-400 transition cursor-pointer select-none`}
                 title={user.name}
               >
                 {getInitials(user.name)}
@@ -92,7 +92,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
                 }`}>
                   {/* User Profile Info */}
                   <div className='flex items-center gap-3 pb-3 border-b border-gray-800/60 dark:border-gray-800 border-gray-200'>
-                    <div className='w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold text-sm shrink-0'>
+                    <div className='w-10 h-10 rounded-full bg-linear-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold text-sm shrink-0'>
                       {getInitials(user.name)}
                     </div>
                     <div className='flex flex-col min-w-0'>
