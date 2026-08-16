@@ -1,8 +1,10 @@
-const API_URL = '/api/auth';
+const BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const API_URL = `${BASE_URL}/api/auth`;
 
 // Helper to get auth header
 const getAuthHeaders = () => {
   const token = localStorage.getItem('codenest_token');
+
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),

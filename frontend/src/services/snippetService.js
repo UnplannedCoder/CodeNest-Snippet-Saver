@@ -1,7 +1,9 @@
-const API_URL = '/api/snippets';
+const BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const API_URL = `${BASE_URL}/api/snippets`;
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('codenest_token');
+
   return {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -15,9 +17,11 @@ const fetchSnippets = async () => {
   });
 
   const data = await response.json();
+
   if (!response.ok) {
     throw new Error(data.message || 'Failed to fetch snippets');
   }
+
   return data;
 };
 
@@ -29,9 +33,11 @@ const createSnippet = async (snippetData) => {
   });
 
   const data = await response.json();
+
   if (!response.ok) {
     throw new Error(data.message || 'Failed to create snippet');
   }
+
   return data;
 };
 
@@ -43,9 +49,11 @@ const updateSnippet = async (id, snippetData) => {
   });
 
   const data = await response.json();
+
   if (!response.ok) {
     throw new Error(data.message || 'Failed to update snippet');
   }
+
   return data;
 };
 
@@ -56,9 +64,11 @@ const deleteSnippet = async (id) => {
   });
 
   const data = await response.json();
+
   if (!response.ok) {
     throw new Error(data.message || 'Failed to delete snippet');
   }
+
   return data;
 };
 
