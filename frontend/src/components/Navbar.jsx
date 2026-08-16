@@ -50,25 +50,26 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
     <nav className={`w-full border-b transition-colors duration-300 ${
       isDarkMode ? 'border-gray-800 bg-black text-white' : 'border-gray-200 bg-white text-gray-900'
     }`}>
-      <div className='max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between w-full relative'>
+      <div className='max-w-4xl mx-auto px-3 sm:px-6 py-3 flex items-center justify-between w-full relative'>
         
         {/* Brand Logo */}
-        <div className='font-bold text-2xl sm:text-3xl flex items-center'>
+        <div className='font-bold text-xl sm:text-2xl md:text-3xl flex items-center shrink-0'>
           <Link to={isAuthenticated ? "/" : "/login"} className='hover:opacity-90 transition tracking-tight'>
             CodeNest
           </Link>
         </div>
 
         {/* Right Section */}
-        <div className='flex items-center gap-3 sm:gap-6'>
+        <div className='flex items-center gap-2 sm:gap-5'>
           
           {/* Nav Links: Only visible when Logged In */}
           {isAuthenticated && (
-            <div className='flex gap-3 sm:gap-5 font-semibold items-center text-sm sm:text-base mr-1 sm:mr-2'>
+            <div className='flex gap-2.5 sm:gap-5 font-semibold items-center text-xs sm:text-base mr-0.5 sm:mr-2'>
               <Link to="/" className='hover:opacity-80 transition font-bold'>Home</Link>
               <Link to="/codenest" className='hover:opacity-80 transition font-bold'>Snippets</Link>
             </div>
           )}
+
 
           {/* User Auth Section */}
           {isAuthenticated && user ? (
