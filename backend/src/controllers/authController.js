@@ -1,6 +1,19 @@
 import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
+import {
+  sendSignupNotification,
+  sendLoginNotification,
+} from '../services/emailService.js';
+
+// Helper function to extract client IP address
+const getClientIp = (req) => {
+  const forwarded = req.headers['x-forwarded-for'];
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+  return req.socket?.remoteAddress || req.ip || 'Unknown';
+};
 
 // Helper function to generate JWT
 const generateToken = (id) => {
@@ -45,6 +58,16 @@ export const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
+    // Send email notification to admin asynchronously (won't block response)
+    const ip = getClientIp(req);
+    const userAgent = req.headers['user-agent'] || 'Unknown';
+    sendSignupNotification({
+      name: user.name,
+      email: user.email,
+      ip,
+      userAgent,
+    });
+
     res.status(201).json({
       _id: user._id,
       name: user.name,
@@ -73,6 +96,16 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: email.toLowerCase() });
 
   if (user && (await user.matchPassword(password))) {
+    // Send email notification to admin asynchronously (won't block response)
+    const ip = getClientIp(req);
+    const userAgent = req.headers['user-agent'] || 'Unknown';
+    sendLoginNotification({
+      name: user.name,
+      email: user.email,
+      ip,
+      userAgent,
+    });
+
     res.json({
       _id: user._id,
       name: user.name,
