@@ -22,6 +22,8 @@ const snippetSchema = new mongoose.Schema(
   }
 );
 
+snippetSchema.index({ user: 1, createdAt: -1 });
+
 const Snippet = mongoose.model('Snippet', snippetSchema);
 
 export default Snippet;
