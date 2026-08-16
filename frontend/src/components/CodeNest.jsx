@@ -78,7 +78,7 @@ const CodeNest = ({ isDarkMode }) => {
 
                                         {/* Left Side: Title and Content */}
                                         <div className='flex flex-col gap-2 w-full md:max-w-[55%] lg:max-w-[60%] shrink-0'>
-                                            <div className='font-bold text-xl sm:text-2xl break-words text-emerald-500 dark:text-emerald-400'>
+                                            <div className='font-bold text-xl sm:text-2xl wrap-break-words text-emerald-500 dark:text-emerald-400'>
                                                 {snippet.title}
                                             </div>
                                             <div className={`text-xs sm:text-sm wrap-break-words line-clamp-3 sm:line-clamp-4 font-mono ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
@@ -178,4 +178,4 @@ const CodeNest = ({ isDarkMode }) => {
     )
 }
 
-export default CodeNest
+export default CodeNest

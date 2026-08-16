@@ -223,7 +223,7 @@ const ViewCodeNest = ({ isDarkMode }) => {
               font-mono
               text-xs sm:text-base
               whitespace-pre-wrap
-              break-words
+              wrap-break-words
               overflow-y-auto
               overflow-x-hidden
               cursor-not-allowed

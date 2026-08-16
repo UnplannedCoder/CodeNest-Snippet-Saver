@@ -91,7 +91,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
                     : 'border-gray-200 bg-white text-gray-900 shadow-gray-400/30'
                 }`}>
                   {/* User Profile Info */}
-                  <div className='flex items-center gap-3 pb-3 border-b border-gray-800/60 dark:border-gray-800 border-gray-200'>
+                  <div className={`flex items-center gap-3 pb-3 border-b ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}>
                     <div className='w-10 h-10 rounded-full bg-linear-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center font-bold text-sm shrink-0'>
                       {getInitials(user.name)}
                     </div>
