@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { removeFromCodeNestThunk } from '../redux/Slice';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
