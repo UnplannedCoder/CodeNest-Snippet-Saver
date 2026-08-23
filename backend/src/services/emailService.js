@@ -1,10 +1,12 @@
 import nodemailer from 'nodemailer';
 
+let transporterInstance = null;
+
 /**
  * Creates and returns a Nodemailer transporter instance.
  */
 const createTransporter = () => {
-  const user = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : null;
+  const user = (process.env.EMAIL_USER || 'pawansa2006@gmail.com').trim();
   const rawPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.trim() : null;
   const pass = rawPass ? rawPass.replace(/\s+/g, '') : null;
 
@@ -12,14 +14,19 @@ const createTransporter = () => {
     return null;
   }
 
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user,
-      pass,
-    },
-  });
+  if (!transporterInstance) {
+    transporterInstance = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user,
+        pass,
+      },
+    });
+  }
+
+  return transporterInstance;
 };
+
 
 /**
  * Parse user-agent string into a clean readable browser & OS format.

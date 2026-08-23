@@ -6,7 +6,16 @@ import authRoutes from './routes/authRoutes.js';
 import snippetRoutes from './routes/snippetRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
-dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env reliably
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config(); // fallback
+
 
 // Connect to MongoDB
 connectDB();
