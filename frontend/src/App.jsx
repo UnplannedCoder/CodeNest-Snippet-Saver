@@ -60,8 +60,13 @@ function App() {
     const token = localStorage.getItem('codenest_token');
     if (token) {
       dispatch(fetchCurrentUser());
+    } else {
+      // Pre-warm backend API server silently so login/signup is instantaneous
+      const baseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+      fetch(`${baseUrl}/api/auth/me`).catch(() => {});
     }
   }, [dispatch]);
+
 
   // Fetch user snippets from MongoDB when user logs in, reset when logged out
   useEffect(() => {

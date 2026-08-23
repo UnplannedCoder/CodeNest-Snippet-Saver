@@ -58,22 +58,30 @@ export const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    // Send email notification to admin asynchronously (won't block response)
     const ip = getClientIp(req);
     const userAgent = req.headers['user-agent'] || 'Unknown';
-    sendSignupNotification({
-      name: user.name,
-      email: user.email,
-      ip,
-      userAgent,
-    });
+    const name = user.name;
+    const email = user.email;
 
+    // 1. Respond to frontend immediately (zero delay for user)
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       token: generateToken(user._id),
       createdAt: user.createdAt,
+    });
+
+    // 2. Dispatch email notification in background (won't delay login/signup)
+    setImmediate(() => {
+      sendSignupNotification({
+        name,
+        email,
+        ip,
+        userAgent,
+      }).catch((err) => {
+        console.error('❌ [EmailService] Background signup email error:', err);
+      });
     });
   } else {
     res.status(400);
@@ -96,22 +104,30 @@ export const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: email.toLowerCase() });
 
   if (user && (await user.matchPassword(password))) {
-    // Send email notification to admin asynchronously (won't block response)
     const ip = getClientIp(req);
     const userAgent = req.headers['user-agent'] || 'Unknown';
-    sendLoginNotification({
-      name: user.name,
-      email: user.email,
-      ip,
-      userAgent,
-    });
+    const name = user.name;
+    const userEmail = user.email;
 
+    // 1. Respond to frontend immediately (zero delay for user)
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       token: generateToken(user._id),
       createdAt: user.createdAt,
+    });
+
+    // 2. Dispatch email notification in background (won't delay login/signup)
+    setImmediate(() => {
+      sendLoginNotification({
+        name,
+        email: userEmail,
+        ip,
+        userAgent,
+      }).catch((err) => {
+        console.error('❌ [EmailService] Background login email error:', err);
+      });
     });
   } else {
     res.status(401);
