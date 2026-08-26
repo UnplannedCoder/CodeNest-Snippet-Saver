@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config();
 
-// Fallback credentials to guarantee email delivery on any deployment
+// Default configuration
 const DEFAULT_EMAIL_USER = 'pawansa2006@gmail.com';
 const DEFAULT_ADMIN_EMAIL = 'pawansa2006@gmail.com';
 const DEFAULT_EMAIL_PASS = 'srzbdvccytojopfr';
@@ -37,9 +37,9 @@ const createTransporter = () => {
         user,
         pass,
       },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
+      connectionTimeout: 5000,
+      greetingTimeout: 5000,
+      socketTimeout: 5000,
     });
   }
 
@@ -228,11 +228,87 @@ const generateEmailTemplate = ({ title, badgeText, badgeColor, details, extraInf
 };
 
 /**
- * Sends an email notification. Non-blocking and catches any errors.
+ * Sends email via HTTP Webhook (e.g. Google Apps Script / Custom Webhook).
+ * Bypasses all cloud/Render SMTP port restrictions (uses standard HTTPS port 443).
+ */
+const sendViaWebhook = async ({ webhookUrl, to, subject, html, text }) => {
+  const response = await fetch(webhookUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to,
+      subject,
+      html,
+      text,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Webhook responded with status ${response.status}`);
+  }
+
+  console.log(`✉️ [EmailService] Notification sent successfully via HTTPS Webhook to ${to}`);
+  return true;
+};
+
+/**
+ * Sends email via Resend HTTP REST API (uses standard HTTPS port 443).
+ */
+const sendViaResend = async ({ apiKey, to, subject, html, text }) => {
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      from: process.env.RESEND_FROM || 'CodeNest Alerts <onboarding@resend.dev>',
+      to: [to],
+      subject,
+      html,
+      text,
+    }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data?.message || `Resend error ${response.status}`);
+  }
+
+  console.log(`✉️ [EmailService] Notification sent successfully via Resend API to ${to}: ${data.id}`);
+  return data;
+};
+
+/**
+ * Sends an email notification using available transport (Webhook HTTP -> Resend HTTP -> Nodemailer SMTP).
  */
 const sendNotificationEmail = async ({ subject, html, text }) => {
+  const adminEmail = (process.env.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL).trim();
+
+  // 1. Try HTTPS Webhook (e.g., Google Apps Script) if configured (Bypasses Render SMTP blocking)
+  const webhookUrl = process.env.EMAIL_WEBHOOK_URL;
+  if (webhookUrl) {
+    try {
+      await sendViaWebhook({ webhookUrl, to: adminEmail, subject, html, text });
+      return;
+    } catch (err) {
+      console.error('⚠️ [EmailService] Webhook transport failed, trying fallback:', err.message);
+    }
+  }
+
+  // 2. Try Resend HTTP REST API if API key is provided (Bypasses Render SMTP blocking)
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (resendApiKey) {
+    try {
+      await sendViaResend({ apiKey: resendApiKey, to: adminEmail, subject, html, text });
+      return;
+    } catch (err) {
+      console.error('⚠️ [EmailService] Resend API transport failed, trying fallback:', err.message);
+    }
+  }
+
+  // 3. Try Nodemailer Gmail SMTP (Works locally or on servers without port blocks)
   try {
-    const adminEmail = (process.env.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL).trim();
     const transporter = createTransporter();
 
     if (!transporter) {
@@ -240,8 +316,9 @@ const sendNotificationEmail = async ({ subject, html, text }) => {
       return;
     }
 
+    const sender = (process.env.EMAIL_USER || DEFAULT_EMAIL_USER).trim();
     const mailOptions = {
-      from: `"CodeNest Alerts" <${process.env.EMAIL_USER || DEFAULT_EMAIL_USER}>`,
+      from: `"CodeNest Alerts" <${sender}>`,
       to: adminEmail,
       subject,
       text,
@@ -249,10 +326,10 @@ const sendNotificationEmail = async ({ subject, html, text }) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`✉️ [EmailService] Notification sent successfully to ${adminEmail}: ${info.messageId}`);
+    console.log(`✉️ [EmailService] Notification sent successfully via SMTP to ${adminEmail}: ${info.messageId}`);
     return info;
   } catch (error) {
-    console.error('❌ [EmailService] Failed to send email notification:', error.message);
+    console.error('❌ [EmailService] SMTP send failed (Note: Cloud free tiers like Render block SMTP ports 465/587. Use EMAIL_WEBHOOK_URL or RESEND_API_KEY for cloud):', error.message);
   }
 };
 
