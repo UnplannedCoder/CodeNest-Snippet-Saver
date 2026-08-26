@@ -2,11 +2,20 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from '../services/authService';
 
 const token = localStorage.getItem('codenest_token');
+let savedUser = null;
+try {
+  const storedUser = localStorage.getItem('codenest_user');
+  if (storedUser) {
+    savedUser = JSON.parse(storedUser);
+  }
+} catch (e) {
+  savedUser = null;
+}
 
 const initialState = {
-  user: null,
+  user: savedUser,
   token: token || null,
-  isAuthenticated: false,
+  isAuthenticated: !!(token && savedUser),
   loading: false,
   error: null,
 };
@@ -35,7 +44,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Async thunk to get current user profile
+// Async thunk to get current user profile in background
 export const fetchCurrentUser = createAsyncThunk(
   'auth/fetchCurrentUser',
   async (_, { rejectWithValue }) => {
@@ -104,9 +113,12 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // Fetch Current User
+      // Fetch Current User (background sync without freezing UI)
       .addCase(fetchCurrentUser.pending, (state) => {
-        state.loading = true;
+        // Do not toggle loading to true if we already have a cached session
+        if (!state.isAuthenticated) {
+          state.loading = true;
+        }
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.loading = false;

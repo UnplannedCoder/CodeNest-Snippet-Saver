@@ -1,9 +1,19 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import snippetService from '../services/snippetService';
 import toast from 'react-hot-toast';
 
+let cachedSnippets = [];
+try {
+  const stored = localStorage.getItem('codenest_snippets');
+  if (stored) {
+    cachedSnippets = JSON.parse(stored);
+  }
+} catch (e) {
+  cachedSnippets = [];
+}
+
 const initialState = {
-  codenest: [],
+  codenest: cachedSnippets,
   loading: false,
   error: null,
 };
@@ -13,7 +23,11 @@ export const fetchUserSnippets = createAsyncThunk(
   'codenest/fetchUserSnippets',
   async (_, { rejectWithValue }) => {
     try {
-      return await snippetService.fetchSnippets();
+      const data = await snippetService.fetchSnippets();
+      try {
+        localStorage.setItem('codenest_snippets', JSON.stringify(data));
+      } catch (e) {}
+      return data;
     } catch (error) {
       return rejectWithValue(error.message || 'Failed to load snippets');
     }
@@ -73,13 +87,18 @@ export const codeNestSlice = createSlice({
       state.codenest = [];
       state.loading = false;
       state.error = null;
+      try {
+        localStorage.removeItem('codenest_snippets');
+      } catch (e) {}
     },
   },
   extraReducers: (builder) => {
     builder
       // Fetch
       .addCase(fetchUserSnippets.pending, (state) => {
-        state.loading = true;
+        if (state.codenest.length === 0) {
+          state.loading = true;
+        }
         state.error = null;
       })
       .addCase(fetchUserSnippets.fulfilled, (state, action) => {
@@ -93,17 +112,26 @@ export const codeNestSlice = createSlice({
       // Add
       .addCase(addToCodeNestThunk.fulfilled, (state, action) => {
         state.codenest.unshift(action.payload);
+        try {
+          localStorage.setItem('codenest_snippets', JSON.stringify(state.codenest));
+        } catch (e) {}
       })
       // Update
       .addCase(updateToCodeNestThunk.fulfilled, (state, action) => {
         const index = state.codenest.findIndex((item) => item._id === action.payload._id);
         if (index >= 0) {
           state.codenest[index] = action.payload;
+          try {
+            localStorage.setItem('codenest_snippets', JSON.stringify(state.codenest));
+          } catch (e) {}
         }
       })
       // Delete
       .addCase(removeFromCodeNestThunk.fulfilled, (state, action) => {
         state.codenest = state.codenest.filter((item) => item._id !== action.payload);
+        try {
+          localStorage.setItem('codenest_snippets', JSON.stringify(state.codenest));
+        } catch (e) {}
       });
   },
 });

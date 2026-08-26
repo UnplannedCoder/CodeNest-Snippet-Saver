@@ -29,6 +29,8 @@ const signup = async (userData) => {
 
   if (data.token) {
     localStorage.setItem('codenest_token', data.token);
+    const userInfo = { _id: data._id, name: data.name, email: data.email };
+    localStorage.setItem('codenest_user', JSON.stringify(userInfo));
   }
 
   return data;
@@ -52,6 +54,8 @@ const login = async (userData) => {
 
   if (data.token) {
     localStorage.setItem('codenest_token', data.token);
+    const userInfo = { _id: data._id, name: data.name, email: data.email };
+    localStorage.setItem('codenest_user', JSON.stringify(userInfo));
   }
 
   return data;
@@ -70,12 +74,19 @@ const getMe = async () => {
     throw new Error(data.message || 'Failed to fetch user profile');
   }
 
+  if (data._id) {
+    const userInfo = { _id: data._id, name: data.name, email: data.email };
+    localStorage.setItem('codenest_user', JSON.stringify(userInfo));
+  }
+
   return data;
 };
 
 // Logout user
 const logout = () => {
   localStorage.removeItem('codenest_token');
+  localStorage.removeItem('codenest_user');
+  localStorage.removeItem('codenest_snippets');
 };
 
 const authService = {

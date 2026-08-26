@@ -14,8 +14,10 @@ import Signup from './components/Signup'
 // Protected Route component (requires logged in user)
 const ProtectedRoute = ({ children, isDarkMode, setIsDarkMode }) => {
   const { isAuthenticated, token, loading } = useSelector((state) => state.auth);
+  const hasLocalToken = !!localStorage.getItem('codenest_token');
 
-  if (loading) {
+  // Only show full-screen loader if there is NO token or auth state cached and we are actively validating
+  if (loading && !isAuthenticated && !hasLocalToken) {
     return (
       <div className={`min-h-screen w-full flex items-center justify-center ${isDarkMode ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-emerald-500"></div>
@@ -23,7 +25,7 @@ const ProtectedRoute = ({ children, isDarkMode, setIsDarkMode }) => {
     );
   }
 
-  if (!isAuthenticated && !token && !localStorage.getItem('codenest_token')) {
+  if (!isAuthenticated && !token && !hasLocalToken) {
     return <Navigate to="/login" replace />;
   }
 
@@ -67,12 +69,11 @@ function App() {
     }
   }, [dispatch]);
 
-
   // Fetch user snippets from MongoDB when user logs in, reset when logged out
   useEffect(() => {
     if (isAuthenticated && user && user._id) {
       dispatch(fetchUserSnippets());
-    } else if (!isAuthenticated) {
+    } else if (!isAuthenticated && !localStorage.getItem('codenest_token')) {
       dispatch(resetAllCodeNest());
     }
   }, [isAuthenticated, user, dispatch]);
