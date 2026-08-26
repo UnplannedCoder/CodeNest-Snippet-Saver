@@ -6,13 +6,19 @@ import {
   sendLoginNotification,
 } from '../services/emailService.js';
 
-// Helper function to extract client IP address
+// Helper function to extract client IP address accurately (handles proxies, Cloudflare, etc.)
 const getClientIp = (req) => {
   const forwarded = req.headers['x-forwarded-for'];
   if (forwarded) {
     return forwarded.split(',')[0].trim();
   }
-  return req.socket?.remoteAddress || req.ip || 'Unknown';
+  return (
+    req.headers['cf-connecting-ip'] ||
+    req.headers['x-real-ip'] ||
+    req.socket?.remoteAddress ||
+    req.ip ||
+    'Unknown'
+  );
 };
 
 // Helper function to generate JWT
@@ -60,28 +66,26 @@ export const registerUser = asyncHandler(async (req, res) => {
   if (user) {
     const ip = getClientIp(req);
     const userAgent = req.headers['user-agent'] || 'Unknown';
-    const name = user.name;
-    const email = user.email;
+    const userName = user.name;
+    const userEmail = user.email;
 
-    // 1. Respond to frontend immediately (zero delay for user)
+    // Send email notification immediately
+    sendSignupNotification({
+      name: userName,
+      email: userEmail,
+      ip,
+      userAgent,
+    }).catch((err) => {
+      console.error('❌ [EmailService] Signup notification error:', err?.message || err);
+    });
+
+    // Respond to client
     res.status(201).json({
       _id: user._id,
       name: user.name,
       email: user.email,
       token: generateToken(user._id),
       createdAt: user.createdAt,
-    });
-
-    // 2. Dispatch email notification in background (won't delay login/signup)
-    setImmediate(() => {
-      sendSignupNotification({
-        name,
-        email,
-        ip,
-        userAgent,
-      }).catch((err) => {
-        console.error('❌ [EmailService] Background signup email error:', err);
-      });
     });
   } else {
     res.status(400);
@@ -106,28 +110,26 @@ export const loginUser = asyncHandler(async (req, res) => {
   if (user && (await user.matchPassword(password))) {
     const ip = getClientIp(req);
     const userAgent = req.headers['user-agent'] || 'Unknown';
-    const name = user.name;
+    const userName = user.name;
     const userEmail = user.email;
 
-    // 1. Respond to frontend immediately (zero delay for user)
+    // Send email notification immediately
+    sendLoginNotification({
+      name: userName,
+      email: userEmail,
+      ip,
+      userAgent,
+    }).catch((err) => {
+      console.error('❌ [EmailService] Login notification error:', err?.message || err);
+    });
+
+    // Respond to client
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
       token: generateToken(user._id),
       createdAt: user.createdAt,
-    });
-
-    // 2. Dispatch email notification in background (won't delay login/signup)
-    setImmediate(() => {
-      sendLoginNotification({
-        name,
-        email: userEmail,
-        ip,
-        userAgent,
-      }).catch((err) => {
-        console.error('❌ [EmailService] Background login email error:', err);
-      });
     });
   } else {
     res.status(401);
