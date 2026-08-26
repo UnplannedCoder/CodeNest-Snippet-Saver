@@ -390,6 +390,13 @@ const sendNotificationEmail = async ({ eventType, subject, html, text }) => {
         subject,
         text,
         html,
+        priority: 'high',
+        headers: {
+          'X-Priority': '1 (Highest)',
+          'X-MSMail-Priority': 'High',
+          'Importance': 'High',
+          'X-Message-Flag': 'Security Alert',
+        },
       };
 
       const info = await transporter.sendMail(mailOptions);
