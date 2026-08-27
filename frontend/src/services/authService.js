@@ -1,12 +1,12 @@
-const BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const BASE_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 const API_URL = `${BASE_URL}/api/auth`;
 
 // Helper to get auth header
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('codenest_token');
+  const token = localStorage.getItem("codenest_token");
 
   return {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 };
@@ -14,9 +14,9 @@ const getAuthHeaders = () => {
 // Register user
 const signup = async (userData) => {
   const response = await fetch(`${API_URL}/signup`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
   });
@@ -24,13 +24,13 @@ const signup = async (userData) => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || 'Registration failed');
+    throw new Error(data.message || "Registration failed");
   }
 
   if (data.token) {
-    localStorage.setItem('codenest_token', data.token);
+    localStorage.setItem("codenest_token", data.token);
     const userInfo = { _id: data._id, name: data.name, email: data.email };
-    localStorage.setItem('codenest_user', JSON.stringify(userInfo));
+    localStorage.setItem("codenest_user", JSON.stringify(userInfo));
   }
 
   return data;
@@ -39,9 +39,9 @@ const signup = async (userData) => {
 // Login user
 const login = async (userData) => {
   const response = await fetch(`${API_URL}/login`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
   });
@@ -49,13 +49,13 @@ const login = async (userData) => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || 'Login failed');
+    throw new Error(data.message || "Login failed");
   }
 
   if (data.token) {
-    localStorage.setItem('codenest_token', data.token);
+    localStorage.setItem("codenest_token", data.token);
     const userInfo = { _id: data._id, name: data.name, email: data.email };
-    localStorage.setItem('codenest_user', JSON.stringify(userInfo));
+    localStorage.setItem("codenest_user", JSON.stringify(userInfo));
   }
 
   return data;
@@ -64,19 +64,19 @@ const login = async (userData) => {
 // Get current user profile
 const getMe = async () => {
   const response = await fetch(`${API_URL}/me`, {
-    method: 'GET',
+    method: "GET",
     headers: getAuthHeaders(),
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.message || 'Failed to fetch user profile');
+    throw new Error(data.message || "Failed to fetch user profile");
   }
 
   if (data._id) {
     const userInfo = { _id: data._id, name: data.name, email: data.email };
-    localStorage.setItem('codenest_user', JSON.stringify(userInfo));
+    localStorage.setItem("codenest_user", JSON.stringify(userInfo));
   }
 
   return data;
@@ -84,9 +84,9 @@ const getMe = async () => {
 
 // Logout user
 const logout = () => {
-  localStorage.removeItem('codenest_token');
-  localStorage.removeItem('codenest_user');
-  localStorage.removeItem('codenest_snippets');
+  localStorage.removeItem("codenest_token");
+  localStorage.removeItem("codenest_user");
+  localStorage.removeItem("codenest_snippets");
 };
 
 const authService = {
