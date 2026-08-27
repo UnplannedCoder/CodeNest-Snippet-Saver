@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import authService from '../services/authService';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import authService from "../services/authService";
 
-const token = localStorage.getItem('codenest_token');
+const token = localStorage.getItem("codenest_token");
 let savedUser = null;
 try {
-  const storedUser = localStorage.getItem('codenest_user');
+  const storedUser = localStorage.getItem("codenest_user");
   if (storedUser) {
     savedUser = JSON.parse(storedUser);
   }
@@ -22,43 +22,43 @@ const initialState = {
 
 // Async thunk for user registration
 export const signupUser = createAsyncThunk(
-  'auth/signup',
+  "auth/signup",
   async (userData, { rejectWithValue }) => {
     try {
       return await authService.signup(userData);
     } catch (error) {
-      return rejectWithValue(error.message || 'Registration failed');
+      return rejectWithValue(error.message || "Registration failed");
     }
-  }
+  },
 );
 
 // Async thunk for user login
 export const loginUser = createAsyncThunk(
-  'auth/login',
+  "auth/login",
   async (userData, { rejectWithValue }) => {
     try {
       return await authService.login(userData);
     } catch (error) {
-      return rejectWithValue(error.message || 'Login failed');
+      return rejectWithValue(error.message || "Login failed");
     }
-  }
+  },
 );
 
 // Async thunk to get current user profile in background
 export const fetchCurrentUser = createAsyncThunk(
-  'auth/fetchCurrentUser',
+  "auth/fetchCurrentUser",
   async (_, { rejectWithValue }) => {
     try {
       return await authService.getMe();
     } catch (error) {
       authService.logout();
-      return rejectWithValue(error.message || 'Session expired');
+      return rejectWithValue(error.message || "Session expired");
     }
-  }
+  },
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     logoutUser: (state) => {
