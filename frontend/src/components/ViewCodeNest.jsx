@@ -1,20 +1,16 @@
-import React from 'react'
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Copy } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { Copy } from "lucide-react";
+import toast from "react-hot-toast";
 
 const ViewCodeNest = ({ isDarkMode }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const allSnippets = useSelector(
-    (state) => state.codenest.codenest
-  );
+  const allSnippets = useSelector((state) => state.codenest.codenest);
 
-  const snippet = allSnippets.find(
-    (item) => item._id === id
-  );
+  const snippet = allSnippets.find((item) => item._id === id);
 
   // If snippet doesn't exist
   if (!snippet) {
@@ -22,7 +18,7 @@ const ViewCodeNest = ({ isDarkMode }) => {
       <div className="w-full min-h-[calc(100dvh-68px)] flex items-center justify-center p-5">
         <div
           className={`text-center font-semibold ${
-            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            isDarkMode ? "text-gray-300" : "text-gray-700"
           }`}
         >
           Snippet not found
@@ -56,7 +52,6 @@ const ViewCodeNest = ({ isDarkMode }) => {
         overflow-hidden
       "
     >
-
       {/* Main Content Wrapper */}
       <div
         className="
@@ -68,7 +63,6 @@ const ViewCodeNest = ({ isDarkMode }) => {
           min-h-0
         "
       >
-
         {/* ================= TOP BAR ================= */}
         <div
           className="
@@ -81,7 +75,6 @@ const ViewCodeNest = ({ isDarkMode }) => {
             shrink-0
           "
         >
-
           {/* Snippet Title */}
           <input
             className={`
@@ -98,8 +91,8 @@ const ViewCodeNest = ({ isDarkMode }) => {
               duration-300
               ${
                 isDarkMode
-                  ? 'border-gray-800 bg-black text-gray-300'
-                  : 'border-gray-300 bg-white text-gray-900'
+                  ? "border-gray-800 bg-black text-gray-300"
+                  : "border-gray-300 bg-white text-gray-900"
               }
             `}
             type="text"
@@ -122,16 +115,14 @@ const ViewCodeNest = ({ isDarkMode }) => {
               text-sm sm:text-base
               ${
                 isDarkMode
-                  ? 'border-gray-800 bg-black text-gray-300 hover:bg-white hover:text-black'
-                  : 'border-gray-300 bg-white text-gray-800 hover:bg-black hover:text-white'
+                  ? "border-gray-800 bg-black text-gray-300 hover:bg-white hover:text-black"
+                  : "border-gray-300 bg-white text-gray-800 hover:bg-black hover:text-white"
               }
             `}
           >
             Back
           </button>
-
         </div>
-
 
         {/* ================= CODE WINDOW ================= */}
         <div
@@ -149,12 +140,11 @@ const ViewCodeNest = ({ isDarkMode }) => {
             duration-300
             ${
               isDarkMode
-                ? 'border-gray-800 bg-black text-white'
-                : 'border-gray-300 bg-white text-gray-900'
+                ? "border-gray-800 bg-black text-white"
+                : "border-gray-300 bg-white text-gray-900"
             }
           `}
         >
-
           {/* ================= WINDOW HEADER ================= */}
           <div
             className={`
@@ -169,19 +159,17 @@ const ViewCodeNest = ({ isDarkMode }) => {
               duration-300
               ${
                 isDarkMode
-                  ? 'bg-gray-900 border-gray-800'
-                  : 'bg-gray-100 border-gray-300'
+                  ? "bg-gray-900 border-gray-800"
+                  : "bg-gray-100 border-gray-300"
               }
             `}
           >
-
             {/* Traffic Lights */}
             <div className="flex items-center gap-1.5 sm:gap-2">
               <div className="w-3 h-3 rounded-full bg-red-500"></div>
               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
               <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
-
 
             {/* Copy Button */}
             <button
@@ -200,8 +188,8 @@ const ViewCodeNest = ({ isDarkMode }) => {
                 transition
                 ${
                   isDarkMode
-                    ? 'border-gray-700 bg-gray-900 text-gray-200 hover:bg-gray-800 hover:text-white'
-                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-200 hover:text-black'
+                    ? "border-gray-700 bg-gray-900 text-gray-200 hover:bg-gray-800 hover:text-white"
+                    : "border-gray-300 bg-white text-gray-700 hover:bg-gray-200 hover:text-black"
                 }
               `}
               title="Copy Code"
@@ -209,9 +197,7 @@ const ViewCodeNest = ({ isDarkMode }) => {
               <Copy size={16} />
               <span>Copy</span>
             </button>
-
           </div>
-
 
           {/* ================= CODE CONTENT ================= */}
           <div
@@ -230,19 +216,14 @@ const ViewCodeNest = ({ isDarkMode }) => {
               transition-colors
               duration-300
               ${
-                isDarkMode
-                  ? 'bg-black text-gray-200'
-                  : 'bg-white text-gray-800'
+                isDarkMode ? "bg-black text-gray-200" : "bg-white text-gray-800"
               }
             `}
           >
             {snippet.content}
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 };
