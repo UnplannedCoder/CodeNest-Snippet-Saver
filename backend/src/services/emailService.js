@@ -1,12 +1,12 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Ensure .env is loaded reliably
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 dotenv.config();
 
 let transporterInstance = null;
@@ -18,15 +18,15 @@ let transporterInstance = null;
 const createTransporter = () => {
   const user = process.env.EMAIL_USER ? process.env.EMAIL_USER.trim() : null;
   const rawPass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.trim() : null;
-  const pass = rawPass ? rawPass.replace(/\s+/g, '') : null;
+  const pass = rawPass ? rawPass.replace(/\s+/g, "") : null;
 
-  if (!user || !pass || pass === 'your_gmail_app_password_here') {
+  if (!user || !pass || pass === "your_gmail_app_password_here") {
     return null;
   }
 
   if (!transporterInstance) {
     transporterInstance = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: "smtp.gmail.com",
       port: 465,
       secure: true,
       auth: {
@@ -46,73 +46,73 @@ const createTransporter = () => {
  * Parse user-agent string into clean, structured device, OS, and browser information.
  */
 export const parseDeviceInfo = (ua) => {
-  if (!ua || ua === 'Unknown' || ua === 'NodeTest') {
+  if (!ua || ua === "Unknown" || ua === "NodeTest") {
     return {
-      device: 'Desktop',
-      os: 'Unknown OS',
-      browser: 'API Client / Unknown',
-      summary: 'Desktop • Unknown OS',
+      device: "Desktop",
+      os: "Unknown OS",
+      browser: "API Client / Unknown",
+      summary: "Desktop • Unknown OS",
     };
   }
 
-  let device = 'Desktop';
-  let os = 'Unknown OS';
-  let browser = 'Unknown Browser';
+  let device = "Desktop";
+  let os = "Unknown OS";
+  let browser = "Unknown Browser";
 
   // 1. Detect Operating System and Device Category
   if (/iPad/i.test(ua)) {
-    device = 'Tablet';
-    os = 'iPadOS';
+    device = "Tablet";
+    os = "iPadOS";
   } else if (/iPhone/i.test(ua)) {
-    device = 'Mobile (iPhone)';
-    os = 'iOS';
+    device = "Mobile (iPhone)";
+    os = "iOS";
   } else if (/Android/i.test(ua)) {
     if (/Mobile/i.test(ua)) {
-      device = 'Mobile';
-      os = 'Android';
+      device = "Mobile";
+      os = "Android";
     } else {
-      device = 'Tablet';
-      os = 'Android Tablet';
+      device = "Tablet";
+      os = "Android Tablet";
     }
   } else if (/Windows NT 10.0/i.test(ua)) {
-    device = 'Desktop';
-    os = 'Windows 10/11';
+    device = "Desktop";
+    os = "Windows 10/11";
   } else if (/Windows NT 6.3/i.test(ua)) {
-    device = 'Desktop';
-    os = 'Windows 8.1';
+    device = "Desktop";
+    os = "Windows 8.1";
   } else if (/Windows NT 6.1/i.test(ua)) {
-    device = 'Desktop';
-    os = 'Windows 7';
+    device = "Desktop";
+    os = "Windows 7";
   } else if (/Windows/i.test(ua)) {
-    device = 'Desktop';
-    os = 'Windows';
+    device = "Desktop";
+    os = "Windows";
   } else if (/Macintosh|Mac OS X/i.test(ua)) {
-    device = 'Desktop';
-    os = 'macOS';
+    device = "Desktop";
+    os = "macOS";
   } else if (/CrOS/i.test(ua)) {
-    device = 'Desktop';
-    os = 'ChromeOS';
+    device = "Desktop";
+    os = "ChromeOS";
   } else if (/Ubuntu/i.test(ua)) {
-    device = 'Desktop';
-    os = 'Ubuntu Linux';
+    device = "Desktop";
+    os = "Ubuntu Linux";
   } else if (/Linux/i.test(ua)) {
-    device = 'Desktop';
-    os = 'Linux';
+    device = "Desktop";
+    os = "Linux";
   }
 
   // 2. Detect Browser
   if (/Edg\//i.test(ua)) {
-    browser = 'Microsoft Edge';
+    browser = "Microsoft Edge";
   } else if (/OPR\/|Opera/i.test(ua)) {
-    browser = 'Opera';
+    browser = "Opera";
   } else if (/Brave/i.test(ua)) {
-    browser = 'Brave';
+    browser = "Brave";
   } else if (/Chrome\/|CriOS/i.test(ua)) {
-    browser = 'Google Chrome';
+    browser = "Google Chrome";
   } else if (/Safari\//i.test(ua) && !/Chrome/i.test(ua)) {
-    browser = 'Apple Safari';
+    browser = "Apple Safari";
   } else if (/Firefox\/|FxiOS/i.test(ua)) {
-    browser = 'Mozilla Firefox';
+    browser = "Mozilla Firefox";
   }
 
   return {
@@ -127,22 +127,34 @@ export const parseDeviceInfo = (ua) => {
  * Format timestamp in IST (Indian Standard Time).
  */
 const formatISTTimestamp = () => {
-  return new Date().toLocaleString('en-IN', {
-    timeZone: 'Asia/Kolkata',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  }) + ' IST';
+  return (
+    new Date().toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    }) + " IST"
+  );
 };
 
 /**
  * Generate responsive and modern HTML email template for CodeNest activity alerts.
  */
-const generateEmailTemplate = ({ eventTitle, badgeText, badgeColor, username, email, device, ip, formattedTime, extraMessage }) => {
-  const adminEmail = process.env.ADMIN_EMAIL || 'pawansa2006@gmail.com';
+const generateEmailTemplate = ({
+  eventTitle,
+  badgeText,
+  badgeColor,
+  username,
+  email,
+  device,
+  ip,
+  formattedTime,
+  extraMessage,
+}) => {
+  const adminEmail = process.env.ADMIN_EMAIL || "pawansa2006@gmail.com";
 
   return `
     <!DOCTYPE html>
@@ -269,7 +281,14 @@ const generateEmailTemplate = ({ eventTitle, badgeText, badgeColor, username, em
 /**
  * Generate clean plain-text fallback content.
  */
-const generatePlainText = ({ eventTitle, username, email, device, ip, formattedTime }) => {
+const generatePlainText = ({
+  eventTitle,
+  username,
+  email,
+  device,
+  ip,
+  formattedTime,
+}) => {
   return `========================================
            CodeNest Alert
 ========================================
@@ -303,8 +322,8 @@ This is an automated alert from CodeNest.
  */
 const sendViaWebhook = async ({ webhookUrl, to, subject, html, text }) => {
   const response = await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       to,
       subject,
@@ -317,7 +336,9 @@ const sendViaWebhook = async ({ webhookUrl, to, subject, html, text }) => {
     throw new Error(`HTTP ${response.status}`);
   }
 
-  console.log(`✉️ [EmailService] Notification delivered via HTTPS Webhook to ${to}`);
+  console.log(
+    `✉️ [EmailService] Notification delivered via HTTPS Webhook to ${to}`,
+  );
   return true;
 };
 
@@ -325,11 +346,12 @@ const sendViaWebhook = async ({ webhookUrl, to, subject, html, text }) => {
  * Sends email via Resend HTTP REST API (uses HTTPS Port 443).
  */
 const sendViaResend = async ({ apiKey, to, subject, html, text }) => {
-  const fromAddress = process.env.RESEND_FROM || 'CodeNest Alerts <onboarding@resend.dev>';
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
+  const fromAddress =
+    process.env.RESEND_FROM || "CodeNest Alerts <onboarding@resend.dev>";
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
@@ -346,7 +368,9 @@ const sendViaResend = async ({ apiKey, to, subject, html, text }) => {
     throw new Error(data?.message || `HTTP ${response.status}`);
   }
 
-  console.log(`✉️ [EmailService] Notification delivered via Resend API to ${to}: ${data.id}`);
+  console.log(
+    `✉️ [EmailService] Notification delivered via Resend API to ${to}: ${data.id}`,
+  );
   return data;
 };
 
@@ -355,27 +379,45 @@ const sendViaResend = async ({ apiKey, to, subject, html, text }) => {
  * Safe error handling: never throws unhandled errors or exposes sensitive credentials.
  */
 const sendNotificationEmail = async ({ eventType, subject, html, text }) => {
-  const adminEmail = (process.env.ADMIN_EMAIL || 'pawansa2006@gmail.com').trim();
+  const adminEmail = (
+    process.env.ADMIN_EMAIL || "pawansa2006@gmail.com"
+  ).trim();
 
   // 1. Try HTTPS Webhook (Google Apps Script / Custom Webhook) -> Ideal for Render Free Tier
-  const webhookUrl = process.env.EMAIL_WEBHOOK_URL ? process.env.EMAIL_WEBHOOK_URL.trim() : null;
+  const webhookUrl = process.env.EMAIL_WEBHOOK_URL
+    ? process.env.EMAIL_WEBHOOK_URL.trim()
+    : null;
   if (webhookUrl) {
     try {
       await sendViaWebhook({ webhookUrl, to: adminEmail, subject, html, text });
       return;
     } catch (err) {
-      console.error(`[EmailService] ${eventType} Webhook dispatch failed:`, err.message);
+      console.error(
+        `[EmailService] ${eventType} Webhook dispatch failed:`,
+        err.message,
+      );
     }
   }
 
   // 2. Try Resend HTTP REST API -> Ideal for cloud deployment
-  const resendApiKey = process.env.RESEND_API_KEY ? process.env.RESEND_API_KEY.trim() : null;
+  const resendApiKey = process.env.RESEND_API_KEY
+    ? process.env.RESEND_API_KEY.trim()
+    : null;
   if (resendApiKey) {
     try {
-      await sendViaResend({ apiKey: resendApiKey, to: adminEmail, subject, html, text });
+      await sendViaResend({
+        apiKey: resendApiKey,
+        to: adminEmail,
+        subject,
+        html,
+        text,
+      });
       return;
     } catch (err) {
-      console.error(`[EmailService] ${eventType} Resend API dispatch failed:`, err.message);
+      console.error(
+        `[EmailService] ${eventType} Resend API dispatch failed:`,
+        err.message,
+      );
     }
   }
 
@@ -390,20 +432,25 @@ const sendNotificationEmail = async ({ eventType, subject, html, text }) => {
         subject,
         text,
         html,
-        priority: 'high',
+        priority: "high",
         headers: {
-          'X-Priority': '1 (Highest)',
-          'X-MSMail-Priority': 'High',
-          'Importance': 'High',
-          'X-Message-Flag': 'Security Alert',
+          "X-Priority": "1 (Highest)",
+          "X-MSMail-Priority": "High",
+          Importance: "High",
+          "X-Message-Flag": "Security Alert",
         },
       };
 
       const info = await transporter.sendMail(mailOptions);
-      console.log(`✉️ [EmailService] ${eventType} notification delivered via SMTP to ${adminEmail}: ${info.messageId}`);
+      console.log(
+        `✉️ [EmailService] ${eventType} notification delivered via SMTP to ${adminEmail}: ${info.messageId}`,
+      );
       return info;
     } catch (error) {
-      console.error(`[EmailService] ${eventType} SMTP dispatch failed (Note: Cloud free tiers like Render block SMTP ports 465/587. Configure EMAIL_WEBHOOK_URL or RESEND_API_KEY):`, error.message);
+      console.error(
+        `[EmailService] ${eventType} SMTP dispatch failed (Note: Cloud free tiers like Render block SMTP ports 465/587. Configure EMAIL_WEBHOOK_URL or RESEND_API_KEY):`,
+        error.message,
+      );
       return;
     }
   }
@@ -411,33 +458,39 @@ const sendNotificationEmail = async ({ eventType, subject, html, text }) => {
   // If no transport is configured
   console.warn(
     `⚠️ [EmailService] ${eventType} notification skipped: No active email transport configured.\n` +
-    `👉 Please set EMAIL_WEBHOOK_URL, RESEND_API_KEY, or EMAIL_USER/EMAIL_PASS in your environment variables.`
+      `👉 Please set EMAIL_WEBHOOK_URL, RESEND_API_KEY, or EMAIL_USER/EMAIL_PASS in your environment variables.`,
   );
 };
 
 /**
  * Send notification when a new user registers (signs up).
  */
-export const sendSignupNotification = async ({ name, email, ip, userAgent }) => {
+export const sendSignupNotification = async ({
+  name,
+  email,
+  ip,
+  userAgent,
+}) => {
   const device = parseDeviceInfo(userAgent);
   const formattedTime = formatISTTimestamp();
-  const safeIp = ip || 'Unknown';
+  const safeIp = ip || "Unknown";
   const subject = `🎉 New User Signup on CodeNest: ${name} (${email})`;
 
   const html = generateEmailTemplate({
-    eventTitle: 'New User Registered',
-    badgeText: 'New Signup',
-    badgeColor: '#10b981', // Emerald
+    eventTitle: "New User Registered",
+    badgeText: "New Signup",
+    badgeColor: "#10b981", // Emerald
     username: name,
     email,
     device,
     ip: safeIp,
     formattedTime,
-    extraMessage: 'A new user has successfully registered an account on CodeNest.',
+    extraMessage:
+      "A new user has successfully registered an account on CodeNest.",
   });
 
   const text = generatePlainText({
-    eventTitle: 'New User Signup',
+    eventTitle: "New User Signup",
     username: name,
     email,
     device,
@@ -446,7 +499,7 @@ export const sendSignupNotification = async ({ name, email, ip, userAgent }) => 
   });
 
   return sendNotificationEmail({
-    eventType: 'Signup',
+    eventType: "Signup",
     subject,
     html,
     text,
@@ -459,23 +512,24 @@ export const sendSignupNotification = async ({ name, email, ip, userAgent }) => 
 export const sendLoginNotification = async ({ name, email, ip, userAgent }) => {
   const device = parseDeviceInfo(userAgent);
   const formattedTime = formatISTTimestamp();
-  const safeIp = ip || 'Unknown';
+  const safeIp = ip || "Unknown";
   const subject = `🔐 User Login Alert: ${name} (${email})`;
 
   const html = generateEmailTemplate({
-    eventTitle: 'User Logged In',
-    badgeText: 'User Login',
-    badgeColor: '#3b82f6', // Blue
+    eventTitle: "User Logged In",
+    badgeText: "User Login",
+    badgeColor: "#3b82f6", // Blue
     username: name,
     email,
     device,
     ip: safeIp,
     formattedTime,
-    extraMessage: 'A user has successfully authenticated and started a new session on CodeNest.',
+    extraMessage:
+      "A user has successfully authenticated and started a new session on CodeNest.",
   });
 
   const text = generatePlainText({
-    eventTitle: 'User Login',
+    eventTitle: "User Login",
     username: name,
     email,
     device,
@@ -484,7 +538,7 @@ export const sendLoginNotification = async ({ name, email, ip, userAgent }) => {
   });
 
   return sendNotificationEmail({
-    eventType: 'Login',
+    eventType: "Login",
     subject,
     html,
     text,
