@@ -1,23 +1,23 @@
-import asyncHandler from 'express-async-handler';
-import jwt from 'jsonwebtoken';
-import User from '../models/userModel.js';
+import asyncHandler from "express-async-handler";
+import jwt from "jsonwebtoken";
+import User from "../models/userModel.js";
 import {
   sendSignupNotification,
   sendLoginNotification,
-} from '../services/emailService.js';
+} from "../services/emailService.js";
 
 // Helper function to extract client IP address accurately (handles proxies, Cloudflare, etc.)
 const getClientIp = (req) => {
-  const forwarded = req.headers['x-forwarded-for'];
+  const forwarded = req.headers["x-forwarded-for"];
   if (forwarded) {
-    return forwarded.split(',')[0].trim();
+    return forwarded.split(",")[0].trim();
   }
   return (
-    req.headers['cf-connecting-ip'] ||
-    req.headers['x-real-ip'] ||
+    req.headers["cf-connecting-ip"] ||
+    req.headers["x-real-ip"] ||
     req.socket?.remoteAddress ||
     req.ip ||
-    'Unknown'
+    "Unknown"
   );
 };
 
@@ -25,10 +25,10 @@ const getClientIp = (req) => {
 const generateToken = (id) => {
   return jwt.sign(
     { id },
-    process.env.JWT_SECRET || 'codenest_jwt_secret_key_2026_super_secure',
+    process.env.JWT_SECRET || "codenest_jwt_secret_key_2026_super_secure",
     {
-      expiresIn: '30d',
-    }
+      expiresIn: "30d",
+    },
   );
 };
 
@@ -40,12 +40,12 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   if (!name || !email || !password) {
     res.status(400);
-    throw new Error('Please fill in all required fields');
+    throw new Error("Please fill in all required fields");
   }
 
   if (password.length < 6) {
     res.status(400);
-    throw new Error('Password must be at least 6 characters long');
+    throw new Error("Password must be at least 6 characters long");
   }
 
   // Check if user already exists
@@ -53,7 +53,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   if (userExists) {
     res.status(400);
-    throw new Error('User already exists with this email address');
+    throw new Error("User already exists with this email address");
   }
 
   // Create user (password hashing handled in userModel pre-save hook)
@@ -65,7 +65,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   if (user) {
     const ip = getClientIp(req);
-    const userAgent = req.headers['user-agent'] || 'Unknown';
+    const userAgent = req.headers["user-agent"] || "Unknown";
     const userName = user.name;
     const userEmail = user.email;
 
@@ -76,7 +76,10 @@ export const registerUser = asyncHandler(async (req, res) => {
       ip,
       userAgent,
     }).catch((err) => {
-      console.error('❌ [EmailService] Signup notification error:', err?.message || err);
+      console.error(
+        "❌ [EmailService] Signup notification error:",
+        err?.message || err,
+      );
     });
 
     // Respond to client
@@ -89,7 +92,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error('Invalid user data provided');
+    throw new Error("Invalid user data provided");
   }
 });
 
@@ -101,7 +104,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   if (!email || !password) {
     res.status(400);
-    throw new Error('Please enter both email address and password');
+    throw new Error("Please enter both email address and password");
   }
 
   // Find user by email
@@ -109,7 +112,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 
   if (user && (await user.matchPassword(password))) {
     const ip = getClientIp(req);
-    const userAgent = req.headers['user-agent'] || 'Unknown';
+    const userAgent = req.headers["user-agent"] || "Unknown";
     const userName = user.name;
     const userEmail = user.email;
 
@@ -120,7 +123,10 @@ export const loginUser = asyncHandler(async (req, res) => {
       ip,
       userAgent,
     }).catch((err) => {
-      console.error('❌ [EmailService] Login notification error:', err?.message || err);
+      console.error(
+        "❌ [EmailService] Login notification error:",
+        err?.message || err,
+      );
     });
 
     // Respond to client
@@ -133,7 +139,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(401);
-    throw new Error('Invalid email or password');
+    throw new Error("Invalid email or password");
   }
 });
 
@@ -141,7 +147,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 // @route   GET /api/auth/me
 // @access  Private
 export const getMe = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).select('-password');
+  const user = await User.findById(req.user._id).select("-password");
 
   if (user) {
     res.json({
@@ -152,6 +158,6 @@ export const getMe = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error('User profile not found');
+    throw new Error("User profile not found");
   }
 });
