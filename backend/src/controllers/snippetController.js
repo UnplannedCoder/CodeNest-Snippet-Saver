@@ -1,11 +1,13 @@
-import asyncHandler from 'express-async-handler';
-import Snippet from '../models/snippetModel.js';
+import asyncHandler from "express-async-handler";
+import Snippet from "../models/snippetModel.js";
 
 // @desc    Get snippets for logged in user
 // @route   GET /api/snippets
 // @access  Private
 export const getSnippets = asyncHandler(async (req, res) => {
-  const snippets = await Snippet.find({ user: req.user._id }).sort({ createdAt: -1 });
+  const snippets = await Snippet.find({ user: req.user._id }).sort({
+    createdAt: -1,
+  });
   res.json(snippets);
 });
 
@@ -17,13 +19,13 @@ export const getSnippetById = asyncHandler(async (req, res) => {
 
   if (!snippet) {
     res.status(404);
-    throw new Error('Snippet not found');
+    throw new Error("Snippet not found");
   }
 
   // Ensure snippet belongs to user
   if (snippet.user.toString() !== req.user._id.toString()) {
     res.status(401);
-    throw new Error('Not authorized to access this snippet');
+    throw new Error("Not authorized to access this snippet");
   }
 
   res.json(snippet);
@@ -37,12 +39,12 @@ export const createSnippet = asyncHandler(async (req, res) => {
 
   if (!content) {
     res.status(400);
-    throw new Error('Snippet content is required');
+    throw new Error("Snippet content is required");
   }
 
   const snippet = await Snippet.create({
     user: req.user._id,
-    title: title || 'Untitled',
+    title: title || "Untitled",
     content,
   });
 
@@ -58,13 +60,13 @@ export const updateSnippet = asyncHandler(async (req, res) => {
 
   if (!snippet) {
     res.status(404);
-    throw new Error('Snippet not found');
+    throw new Error("Snippet not found");
   }
 
   // Ensure snippet belongs to user
   if (snippet.user.toString() !== req.user._id.toString()) {
     res.status(401);
-    throw new Error('Not authorized to update this snippet');
+    throw new Error("Not authorized to update this snippet");
   }
 
   snippet.title = title !== undefined ? title : snippet.title;
@@ -82,15 +84,15 @@ export const deleteSnippet = asyncHandler(async (req, res) => {
 
   if (!snippet) {
     res.status(404);
-    throw new Error('Snippet not found');
+    throw new Error("Snippet not found");
   }
 
   // Ensure snippet belongs to user
   if (snippet.user.toString() !== req.user._id.toString()) {
     res.status(401);
-    throw new Error('Not authorized to delete this snippet');
+    throw new Error("Not authorized to delete this snippet");
   }
 
   await snippet.deleteOne();
-  res.json({ id: req.params.id, message: 'Snippet removed successfully' });
+  res.json({ id: req.params.id, message: "Snippet removed successfully" });
 });
