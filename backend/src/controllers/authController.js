@@ -1,10 +1,10 @@
-import asyncHandler from "express-async-handler";
-import jwt from "jsonwebtoken";
-import User from "../models/userModel.js";
+import asyncHandler from "express-async-handler"
+import jwt from "jsonwebtoken"
+import User from "../models/userModel.js"
 import {
   sendSignupNotification,
   sendLoginNotification,
-} from "../services/emailService.js";
+} from "../services/emailService.js"
 
 // Helper function to extract client IP address accurately (handles proxies, Cloudflare, etc.)
 const getClientIp = (req) => {
