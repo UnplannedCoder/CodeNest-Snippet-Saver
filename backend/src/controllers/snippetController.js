@@ -1,5 +1,5 @@
-import asyncHandler from "express-async-handler";
-import Snippet from "../models/snippetModel.js";
+import asyncHandler from "express-async-handler"
+import Snippet from "../models/snippetModel.js"
 
 // @desc    Get snippets for logged in user
 // @route   GET /api/snippets
@@ -7,9 +7,9 @@ import Snippet from "../models/snippetModel.js";
 export const getSnippets = asyncHandler(async (req, res) => {
   const snippets = await Snippet.find({ user: req.user._id }).sort({
     createdAt: -1,
-  });
+  })
   res.json(snippets);
-});
+})
 
 // @desc    Get single snippet by ID
 // @route   GET /api/snippets/:id
