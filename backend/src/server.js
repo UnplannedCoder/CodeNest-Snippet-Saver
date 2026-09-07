@@ -5,7 +5,6 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import snippetRoutes from "./routes/snippetRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
-
 import path from "path";
 import { fileURLToPath } from "url";
 
