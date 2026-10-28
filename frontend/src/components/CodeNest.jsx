@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import {
   FacebookShareButton,
+  TwitterShareButton,
   WhatsappShareButton,
   LinkedinShareButton,
   FacebookIcon,
